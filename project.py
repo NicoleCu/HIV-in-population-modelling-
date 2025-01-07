@@ -7,9 +7,9 @@ import matplotlib.pyplot as plt
 e = ''
 x = []
 time0, time1, time2 = [], [], []
-t = int(input("Введите временной промежуток:"))
-f = xlrd.open_workbook(input("Введите название файла:"), "r")  # открытие файла; в каждой строке: ФИО, год рождения
-s = f.sheet_by_index(0)         # открывается лист с данными по периоду. Номер листа совпадает с номером периода
+t = int(input("Enter time period:"))
+f = xlrd.open_workbook(input("Enter file name:"), "r")  # opening file; in each line: full name, year of birth
+s = f.sheet_by_index(0)         # a sheet with data for the period opens. The sheet number matches the period number
 for row in range(s.nrows):
     b = []
     for col in range(s.ncols):
@@ -19,10 +19,10 @@ for row in range(s.nrows):
             e = str(b[i])
         else:
             e = e + str(b[i])
-    time0.append(e)         # создание массива с преобразованными данными по периоду. Одна строка = элементу масива
+    time0.append(e)         # creating an array with converted data by period. One row = array element
 
-s = f.sheet_by_index(1)  # проделывается то же самое с листом 1 периода, считается число совпадений
-for row in range(s.nrows):  # создает массив
+s = f.sheet_by_index(1)  # the same is done with the sheet of period 1, the number of matches is counted
+for row in range(s.nrows):  # creates an array
     g = []
     for col in range(s.ncols):
         g.append(s.cell(row, col))
@@ -38,11 +38,11 @@ time01 = list(time0+time1)
 b01 = Counter(time01)
 m01 = 0
 for word in b01:
-    if b01[word] > 1:               # m01 - помеченные из выявленых во втором периоде
+    if b01[word] > 1:               # m01 - marked from those identified in the second period
         m01 += 1
 
-s = f.sheet_by_index(2)  # проделывается то же самое с листом 2 периода, считается число совпадений
-for row in range(s.nrows):  # создает массив
+s = f.sheet_by_index(2)  # the same is done with the sheet of period 2, the number of matches is counted
+for row in range(s.nrows):  # creates an array
     p = []
     for col in range(s.ncols):
         p.append(s.cell(row, col))
@@ -72,29 +72,28 @@ for word in b012:
     if b012[word] > 1:
         m012 += 1
 
-N = (len(time01)*(len(time1)-m01)*(m01+m012))/(m01*(m12+m012))      # Вычисление общей ЧИСЛЕННОСТИ
-SPEED = (1/t)*(math.log(m01*len(time1)/len(time0)*(m02+m012)))     # скорость роста популяции
-speed = (1/t)*(math.log((len(time1)-m01))*(m02+m012))/len(time0)*(m12+m012)    # скорость снижения численности популяции
+N = (len(time01)*(len(time1)-m01)*(m01+m012))/(m01*(m12+m012))      # Calculating the total NUMBER
+SPEED = (1/t)*(math.log(m01*len(time1)/len(time0)*(m02+m012)))     # population growth rate
+speed = (1/t)*(math.log((len(time1)-m01))*(m02+m012))/len(time0)*(m12+m012)    # rate of population decline
 
-x.append(round(N))  # округление значений до целого, x - список с данными по численности в разные года
+x.append(round(N))  # rounding values ​​to integers, x is a list with data on the number of people in different years
 
 
-def number(gamma, beta, a):     # функция, которая на основе данных численности и скоростей роста и убывания
+def number(gamma, beta, a):     # a function that, based on data on the number and rates of growth and decline,
     N = a * ((math.exp(gamma) - math.floor(math.exp(gamma))) + (math.exp(beta) - math.floor(math.exp(beta))))
-    return N                # считает новую численность (N для каждого года мненяется, speed и SPEED константы)
+    return N                # calculates the new number (N is different for each year, speed and SPEED are constants)
 
-
-l = 2                                           # вычисление численности для 2 лет
+l = 2                                           # Calculation of the number for 2 years
 while l > 0:
     N = number(speed, SPEED, N)
     l = l - 1
-    x.append(round(N))   # округление значений
+    x.append(round(N))   # rounding of values
 print(x)
 
 plt.bar([t, t+t, 3*t], [x[0], x[1], x[2]], color='silver')
 plt.plot([t, t+t, 3*t], [x[0], x[1], x[2]], color='red')
-plt.title('Прирост числа инфицированных')
-plt.ylabel('Количество человек')
-plt.xlabel('Временной период')
+plt.title('Increase in the number of infected')
+plt.ylabel('Number of people')
+plt.xlabel('Time period')
 plt.show()
 
